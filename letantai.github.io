@@ -1,0 +1,918 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BILL Shop</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+body{background:#f5f5f5}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:black;
+    color:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+}
+
+
+.menu{
+    display:flex;
+    gap:25px;
+    align-items:center;
+}
+
+.menu a{
+    color:white;
+    text-decoration:none;
+    position:relative;
+    padding:5px;
+}
+
+
+.menu a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-5px;
+    width:0;
+    height:2px;
+    background:#e2b894;
+    transition:0.3s;
+}
+.menu a:hover::after{
+    width:100%;
+}
+
+
+
+
+
+
+.dropdown-content a{
+    padding:10px;
+    color:black;
+}
+
+.dropdown-content a:hover{
+    background:#eee;
+}
+
+
+
+
+.right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.cart{
+    cursor:pointer;
+    font-size:18px;
+}
+
+#count{
+    background:red;
+    padding:2px 6px;
+    border-radius:50%;
+    font-size:12px;
+}
+
+
+.menu-btn{
+    display:none;
+    font-size:22px;
+    cursor:pointer;
+}
+
+@media(max-width:768px){
+    .menu{
+        display:none;
+        position:absolute;
+        top:60px;
+        left:0;
+        width:100%;
+        background:black;
+        flex-direction:column;
+        text-align:center;
+        padding:10px 0;
+    }
+
+    .menu.active{
+        display:flex;
+    }
+
+    .dropdown-content{
+        position:static;
+        background:black;
+    }
+
+    .dropdown-content a{
+        color:white;
+    }
+
+    .menu-btn{
+        display:block;
+    }
+
+}
+
+.banner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:40px;
+    flex-wrap:wrap;
+
+    background-image: url("img/nen2.jpg"); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+
+.banner-slider{
+    position:relative;
+    width:300px;
+    height:400px;
+}
+.slide{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:10px;
+    opacity:0;
+    transition:0.5s;
+}
+.slide.active{opacity:1}
+
+
+.btn-slide{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:black;
+    color:white;
+    border:none;
+    padding:8px;
+    cursor:pointer;
+}
+.prev{left:0}
+.next{right:0}
+
+
+.search{
+    text-align:center;
+    padding:20px;
+}
+.search input{
+    width:60%;
+    padding:12px;
+    border-radius:30px;
+    border:1px solid #ccc;
+}
+
+.products{padding:30px;}
+.products h2{margin-bottom:20px;}
+
+
+.product-wrapper{
+    position:relative;
+    overflow:hidden; 
+}
+.product-slider{
+    display:flex;
+    gap:20px;
+
+    overflow-x:auto;       
+    scroll-behavior:smooth; 
+}
+.product-slider::-webkit-scrollbar{
+    height:6px;
+}
+.product-slider::-webkit-scrollbar-thumb{
+    background:#ccc;
+    border-radius:10px;
+}
+
+.product{
+    min-width:220px;
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+
+    
+}
+
+.product img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+
+.like{cursor:pointer;color:gray;}
+.like.active{color:red}
+
+
+.product button{
+    margin-top:10px;
+    padding:6px 12px;
+    border:none;
+    background:black;
+    color:white;
+    cursor:pointer;
+}
+.price{
+    color:#f00707d2;
+    font-weight:bold;
+    margin:5px 0;
+    font-size:16px;
+}
+
+
+.nav-btn{
+    position:absolute;
+    top:40%;
+    transform:translateY(-50%);
+    background:black;
+    color:white;
+    border:none;
+    padding:10px;
+    cursor:pointer;
+}
+.nav-prev{left:0}
+.nav-next{right:0}
+
+
+.cart-box{
+    position:fixed;
+    right:0;
+    top:0;
+    width:300px;
+    height:100%;
+    background:white;
+    padding:20px;
+    display:none;
+    box-shadow:-2px 0 10px rgba(0,0,0,0.2);
+}
+
+
+.featured-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.featured-item{
+    position:relative;
+    overflow:hidden;
+    border-radius:15px;
+    animation: float 4s ease-in-out infinite;
+}
+
+.featured-item img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+    transition:0.5s;
+}
+
+.featured-item:hover img{
+    transform:scale(1.2) rotate(2deg);
+}
+
+.overlay{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    background:rgba(0,0,0,0.6);
+    color:white;
+    text-align:center;
+    padding:10px;
+    opacity:0;
+    transition:0.4s;
+}
+
+.featured-item:hover .overlay{opacity:1;}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+
+@media(max-width:768px){
+    .banner{flex-direction:column}
+    .search input{width:90%}
+    .featured-grid{grid-template-columns:1fr 1fr;}
+}
+#news .featured-item{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    text-align:left;
+}
+
+#news h3{
+    margin-top:10px;
+    color:#e2b894;
+}
+
+#news p{
+    font-size:13px;
+    margin:3px 0;
+}
+
+.about{
+    background:#111;
+    color:white;
+    padding:40px 20px;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
+    text-align:center;
+}
+
+.about-box{
+    width:300px;
+}
+
+.about-box h2{
+    margin-bottom:10px;
+    color:#e2b894;
+}
+
+.about-box p{
+    line-height:1.6;
+    font-size:14px;
+}
+
+.about{
+    background:#111;
+    color:white;
+    padding:40px 20px;
+}
+
+
+.footer{
+    background:#000;
+    color:white;
+    padding:40px 20px 20px;
+}
+
+
+.footer-container{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:30px;
+}
+
+.footer-box h3{
+    margin-bottom:10px;
+    color:#e2b894;
+}
+
+.footer-box p{
+    font-size:14px;
+    line-height:1.6;
+    cursor:pointer;
+}
+
+.footer-box p:hover{
+    color:#e2b894;
+}
+
+.footer-bottom{
+    text-align:center;
+    margin-top:30px;
+    border-top:1px solid #333;
+    padding-top:15px;
+    font-size:13px;
+}
+.video-section{
+    display:flex;
+    flex-wrap:wrap; 
+    justify-content:center;
+    gap:15px;
+    padding:20px 10px;
+    background:#000;
+}
+
+.video-section video{
+    width:23%;   
+    height:150px;
+    object-fit:cover;
+    border-radius:12px;
+}
+
+
+@media(max-width:768px){
+    .video-section video{
+        width:45%;
+        height:120px;
+    }
+
+    .about{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .about-box{
+        width:100%;
+        max-width:350px;
+    }
+
+    .footer-container{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+}
+
+</style>
+</style>
+</head>
+<body>
+
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#home">BILL</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item">
+          <a class="nav-link" href="#home">Trang chủ</a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            Nước hoa
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#nam">Nước hoa Nam</a></li>
+            <li><a class="dropdown-item" href="#nu">Nước hoa Nữ</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#featured">Tin tức</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#contact">Liên hệ</a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+    <div class="right">
+        🛒 <span id="count">0</span>
+        
+    </div>
+</header>
+<section class="video-section">
+    <video autoplay muted loop>
+        <source src="img/7720595203558.mp4">
+    </video>
+
+    <video autoplay muted loop>
+        <source src="img/7720601733852.mp4">
+    </video>
+
+    <video autoplay muted loop>
+        <source src="img/7720623941570.mp4" type="video/mp4">
+    </video>
+    <video autoplay muted loop>
+        <source src="img/7727483007486.mp4" type="video/mp4">
+    </video>
+</section>
+
+
+
+<section id="home" class="banner">
+<div>
+<h1>NEW FRAGRANCE</h1>
+<p>Luxury Collection</p>
+</div>
+
+<div class="banner-slider">
+<img src="img/Creed.jpg" class="slide active">
+<img src="img/Versace.webp" class="slide">
+<img src="img/Bleu Chanel.jpg" class="slide">
+<img src="img/gio - Copy.jpg" class="slide">
+
+
+
+<button class="btn-slide prev" onclick="prevSlide()">◀</button>
+<button class="btn-slide next" onclick="nextSlide()">▶</button>
+</div>
+</section>
+
+
+<div class="container my-4">
+   <input type="text" id="search" class="form-control"placeholder="🔍 Tìm nước hoa..." onkeyup="searchProduct()">
+</div>
+
+<section id="nam" class="container py-5">
+  <h2 class="mb-4">NƯỚC HOA NAM</h2>
+
+  <div class="row g-4">
+
+    <div class="col-md-3 col-6">
+      <div class="card h-100">
+        <img src="img/Creed.jpg" class="card-img-top">
+        <div class="card-body text-center">
+          <h6>Dior Sauvage</h6>
+          <p class="text-danger fw-bold">1.200.000đ</p>
+          <button class="btn btn-dark btn-sm" onclick="add('Dior Sauvage')">Mua</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+      <div class="card h-100">
+        <img src="img/Bleu Chanel.jpg" class="card-img-top">
+        <div class="card-body text-center">
+          <h6>Bleu Chanel</h6>
+          <p class="text-danger fw-bold">1.200.000đ</p>
+          <button class="btn btn-dark btn-sm">Mua</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+  <div class="card h-100">
+    <img src="img/Versace.webp" class="card-img-top">
+    <div class="card-body text-center">
+      <h6>Versace Eros</h6>
+      <p class="text-danger fw-bold">1.500.000đ</p>
+      <button class="btn btn-dark btn-sm" onclick="add('Versace Eros')">Mua</button>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-3 col-6">
+  <div class="card h-100">
+    <img src="img/YSL.jpg" class="card-img-top">
+    <div class="card-body text-center">
+      <h6>YSL Y</h6>
+      <p class="text-danger fw-bold">2.200.000đ</p>
+      <button class="btn btn-dark btn-sm" onclick="add('YSL Y')">Mua</button>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-3 col-6">
+  <div class="card h-100">
+    <img src="img/gio - Copy.jpg" class="card-img-top">
+    <div class="card-body text-center">
+      <h6>Acqua Di Gio</h6>
+      <p class="text-danger fw-bold">2.300.000đ</p>
+      <button class="btn btn-dark btn-sm" onclick="add('Gio')">Mua</button>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-3 col-6">
+  <div class="card h-100">
+    <img src="img/Calvin Klein.jpg" class="card-img-top">
+    <div class="card-body text-center">
+      <h6>Calvin Klein</h6>
+      <p class="text-danger fw-bold">1.200.000đ</p>
+      <button class="btn btn-dark btn-sm" onclick="add('CK')">Mua</button>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-3 col-6">
+  <div class="card h-100">
+    <img src="img/Nuoc-hoa-Dior-Sauvage-EDT - Copy.png" class="card-img-top">
+    <div class="card-body text-center">
+      <h6>Dior</h6>
+      <p class="text-danger fw-bold">4.200.000đ</p>
+      <button class="btn btn-dark btn-sm" onclick="add('Dior')">Mua</button>
+    </div>
+  </div>
+</div>
+<div class="col-md-3 col-6">
+  <div class="card h-100">
+    <img src="img/Byredo.jpg" class="card-img-top">
+    <div class="card-body text-center">
+      <h6>Byredo</h6>
+      <p class="text-danger fw-bold">1.200.000đ</p>
+      <button class="btn btn-dark btn-sm" onclick="add('Byredo')">Mua</button>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+</section>
+
+
+
+
+<section id="nu" class="products">
+<h2>NƯỚC HOA NỮ</h2>
+<div class="product-wrapper">
+<button class="nav-btn nav-prev" onclick="prevProduct('slider2')">◀</button>
+
+
+
+
+<div class="product-slider" id="slider2">
+<div class="product"><img src="img/Chanel Chance.jpg"><p>Chanel Chance</p><h4 class="price">1.200.000đ</h4><span class="like" onclick="like(this)"></span><button onclick="add('Chance')">Mua</button></div>
+<div class="product"><img src="img/YSL.jpg"><p>YSL Libre</p><h4 class="price">1.200.000đ</h4><span class="like" onclick="like(this)"></span><button onclick="add('Libre')">Mua</button></div>
+<div class="product"><img src="img/Gucci.jpg"><p>Gucci</p><h4 class="price">2.200.000đ</h4><span class="like" onclick="like(this)"></span><button onclick="add('Gucci')">Mua</button></div>
+<div class="product"><img src="img/Dior.jpg"><p>Dior</p><h4 class="price">3.200.000đ</h4><span class="like" onclick="like(this)"></span><button onclick="add('Dior')">Mua</button></div>
+<div class="product"><img src="img/Versace.webp"><p>Dior Sauvage</p><h4 class="price">3.500.000đ</h4><span class="like" onclick="like(this)"></span><button onclick="add('Dior')">Mua</button></div>
+<div class="product"><img src="img/Bleu Chanel.jpg"><p>Bleu Chanel</p><h4 class="price">2.500.000đ</h4><span class="like" onclick="like(this)"></span><button onclick="add('Chanel')">Mua</button></div>
+<div class="product"><img src="img/Versace.webp"><p>Versace</p><h4 class="price">3.200.000đ</h4><span class="like" onclick="like(this)"></span><button onclick="add('Versace')">Mua</button></div>
+<div class="product"><img src="img/YSL.jpg"><p>YSL</p><h4 class="price">1.200.000đ</h4><span class="like" onclick="like(this)"></span><button onclick="add('YSL')">Mua</button></div>
+</div>
+<button class="nav-btn nav-prev" onclick="prevProduct('slider2')">◀</button>
+<button class="nav-btn nav-next" onclick="nextProduct('slider2')">▶</button>
+</div>
+
+</section>
+
+
+
+
+<section id="featured" class="products">
+<h2>🔥 SẢN PHẨM NỔI BẬT</h2>
+
+<div class="featured-grid">
+<div class="featured-item"><img src="img/gio - Copy.jpg"><div class="overlay">Dior nam</div></div>
+<div class="featured-item"><img src="img/Bleu Chanel.jpg"><div class="overlay">Chanel</div></div>
+<div class="featured-item"><img src="img/Dior.jpg"><div class="overlay">Dior Nữ</div></div>
+<div class="featured-item"><img src="img/YSL.jpg"><div class="overlay">YSL</div></div>
+<div class="featured-item"><img src="img/Versace.webp"><div class="overlay">Versace</div></div>
+<div class="featured-item"><img src="img/YSL Libre.jpg"><div class="overlay">YSL Libre</div></div>
+<div class="featured-item"><img src="img/Gucci.jpg"><div class="overlay">Gucci</div></div>
+<div class="featured-item"><img src="img/Dior.jpg"><div class="overlay">Dior Nam</div></div>
+
+
+
+
+</div>
+<section id="news" class="products">
+<h2>📰 THÔNG TIN</h2>
+
+<div class="featured-grid">
+
+<div class="featured-item">
+<img src="img/dior nam.jpg">
+
+<h3>Dior Sauvage</h3>
+<p>Thương hiệu: Dior</p>
+<p>Hương chính: Cam bergamot, tiêu, ambroxan</p>
+<p>Phong cách: Nam tính, mạnh mẽ</p>
+<p>Lưu hương: 6 - 8 giờ</p>
+<p>Phù hợp: Đi làm, đi chơi</p>
+
+</div>
+
+<div class="featured-item">
+<img src="img/Chanel Chance.jpg">
+
+<h3>Chanel Bleu</h3>
+<p>Thương hiệu: Chanel</p>
+<p>Hương chính: Gỗ đàn hương, citrus</p>
+<p>Phong cách: Sang trọng, lịch lãm</p>
+<p>Lưu hương: 7 - 9 giờ</p>
+<p>Phù hợp: Mọi hoàn cảnh</p>
+
+</div>
+<div class="featured-item">
+<img src="img/YSL.jpg">
+
+<h3>YSL</h3>
+<p>Thương hiệu: YSL</p>
+<p>Hương chính: Gỗ đàn hương, citrus</p>
+<p>Phong cách: Sang trọng, lịch lãm</p>
+<p>Lưu hương: 7 - 9 giờ</p>
+<p>Phù hợp: Mọi hoàn cảnh</p>
+</div>
+
+<div class="featured-item">
+<img src="img/Versace.webp">
+
+<h3>Versace</h3>
+<p>Thương hiệu:Versace</p>
+<p>Hương chính: Gỗ đàn hương, citrus</p>
+<p>Phong cách: Sang trọng, lịch lãm</p>
+<p>Lưu hương: 8 - 10 giờ</p>
+<p>Phù hợp: Mọi hoàn cảnh</p>
+
+</div>
+
+
+
+</div>
+</section>
+
+
+<section id="contact" class="footer">
+    <div class="footer-container">
+
+        <div class="footer-box">
+            <h3>BILL SHOP</h3>
+            <p>Chuyên nước hoa chính hãng, giá tốt, uy tín.</p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Danh mục</h3>
+            <p>• Nước hoa nam</p>
+            <p>• Nước hoa nữ</p>
+            <p>• Nổi bật</p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Hỗ trợ</h3>
+            <p>• Đổi trả</p>
+            <p>• Bảo hành</p>
+            <p>• Liên hệ</p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Mạng xã hội</h3>
+            <p>Facebook</p>
+            <p>Instagram</p>
+            <p>TikTok</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 BILL Shop
+    </div>
+</section>
+
+
+<div class="cart-box" id="cartBox">
+    <h3>Giỏ hàng</h3>
+    <ul id="list"></ul>
+</div>
+
+
+<script>
+
+let slides=document.querySelectorAll(".slide");
+let i=0;
+
+function show(n){
+    slides.forEach(s=>s.classList.remove("active"));
+    slides[n].classList.add("active");
+}
+
+function nextSlide(){
+    i=(i+1)%slides.length;
+    show(i);
+}
+
+function prevSlide(){
+    i=(i-1+slides.length)%slides.length;
+    show(i);
+}
+
+setInterval(nextSlide,3000);
+
+
+function like(e){
+    e.classList.toggle("active");
+}
+
+
+let cart=[];
+
+function add(name){
+    cart.push(name);
+    document.getElementById("count").innerText=cart.length;
+
+    let li=document.createElement("li");
+    li.innerText=name;
+    document.getElementById("list").appendChild(li);
+}
+
+function toggleCart(){
+    let c=document.getElementById("cartBox");
+    c.style.display = (c.style.display=="block")?"none":"block";
+}
+
+
+function searchProduct(){
+    let v=document.getElementById("search").value.toLowerCase();
+
+    document.querySelectorAll(".product").forEach(p=>{
+        p.style.display = p.innerText.toLowerCase().includes(v) ? "block":"none";
+    });
+}
+
+
+function nextProduct(id){
+    document.getElementById(id).scrollLeft += 250;
+}
+
+function prevProduct(id){
+    document.getElementById(id).scrollLeft -= 250;
+}
+
+
+document.querySelectorAll(".product-slider").forEach(slider=>{
+    let isDown=false;
+    let startX;
+    let scrollLeft;
+
+    slider.addEventListener("mousedown",(e)=>{
+        isDown=true;
+        startX=e.pageX - slider.offsetLeft;
+        scrollLeft=slider.scrollLeft;
+    });
+
+    slider.addEventListener("mouseleave",()=> isDown=false);
+    slider.addEventListener("mouseup",()=> isDown=false);
+
+    slider.addEventListener("mousemove",(e)=>{
+        if(!isDown) return;
+        e.preventDefault();
+        const x=e.pageX - slider.offsetLeft;
+        const walk=(x - startX)*2;
+        slider.scrollLeft=scrollLeft - walk;
+    });
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    const videos = document.querySelectorAll(".video-section video");
+
+    videos.forEach(video => {
+        video.play();
+
+        video.addEventListener("click", () => {
+            if(video.paused){
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+    });
+});
+
+</script>
+
+
+
+<section id="about" class="about">
+    
+    <div class="about-box">
+        <h2>🌿 VỀ BILL</h2>
+        <p>
+            BILL là thương hiệu chuyên cung cấp nước hoa chính hãng,
+            mang đến những mùi hương tinh tế, sang trọng và đẳng cấp.
+            Chúng tôi cam kết chất lượng, uy tín và trải nghiệm tốt nhất cho khách hàng.
+        </p>
+    </div>
+
+    <div class="about-box">
+        <h2>👤 THÔNG TIN LIÊN HỆ</h2>
+        <p>📞 0359713159</p>
+        <p>📧 Billshop@gmail.com</p>
+        <p>📍 TP. Hồ Chí Minh</p>
+        <p>🕒 08:00 - 22:00 (Hàng ngày)</p>
+    </div>
+
+</section>
+
+</body>
+</html>
